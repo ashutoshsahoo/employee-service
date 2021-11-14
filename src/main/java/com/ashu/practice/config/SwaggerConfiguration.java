@@ -34,7 +34,7 @@ public class SwaggerConfiguration {
 
 	private ApiInfo apiInfo() {
 		Contact contact = new Contact("Ashutosh Sahoo", "www.example.com", "myemail@company.com");
-		return new ApiInfo("Employee REST API", "Provides services to manage employees.", "1.0.0",
+		return new ApiInfo("Employee REST API", "Provides services to manage employees.", "2.0.0",
 				"https://www.example.com", contact, "License of API", "https://www.example.com",
 				Collections.emptyList());
 	}

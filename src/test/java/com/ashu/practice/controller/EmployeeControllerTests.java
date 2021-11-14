@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class EmployeeControllerTests {
+class EmployeeControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -57,7 +57,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void find_employeeId_OK() throws Exception {
+	void find_employeeId_OK() throws Exception {
 		// @formatter:off
 		mockMvc.perform(
 				get("/employees/{id}", 1001)
@@ -77,7 +77,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void find_employeeIdNotFound_404() throws Exception {
+	void find_employeeIdNotFound_404() throws Exception {
 		// @formatter:off
 		mockMvc.perform(get("/employees/{id}", 1005)
 				.accept(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void find_allEmployee_OK() throws Exception {
+	void find_allEmployee_OK() throws Exception {
 		Employee employee1 = createSampleEmployee();
 		Employee employee2 = createEmployee(1002L, "employee name two", "employee designation two",
 				"employee department two", "9000011112", "employee address2");
@@ -118,7 +118,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void save_employee_OK() throws Exception {
+	void save_employee_OK() throws Exception {
 		Employee employee = createSampleEmployee();
 		CreateEmployeeRequest createEmployee = new CreateEmployeeRequest();
 		createEmployee.setName("employee name");
@@ -141,7 +141,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void save_emptyName_nullDesignation_400() throws Exception {
+	void save_emptyName_nullDesignation_400() throws Exception {
 		Employee employee = createEmployee(null, "", null, "department", null, null);
 		// @formatter:off
 		mockMvc.perform(post("/employees")
@@ -162,7 +162,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void update_employee_OK() throws Exception {
+	void update_employee_OK() throws Exception {
 		Employee updateEmployee = updatePyload();
 		Employee employee = createSampleEmployee();
 		when(mockRepository.save(any(Employee.class))).thenReturn(employee);
@@ -183,7 +183,7 @@ public class EmployeeControllerTests {
 	}
 
 	@Test
-	public void delete_employee_OK() throws Exception {
+	void delete_employee_OK() throws Exception {
 		doNothing().when(mockRepository).delete(any(Employee.class));
 		// @formatter:off
 		mockMvc.perform(delete("/employees/{id}", 1001)
@@ -195,9 +195,9 @@ public class EmployeeControllerTests {
 		verify(mockRepository, times(1)).delete(createSampleEmployee());
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Test
-	public void search_employee_OK() throws Exception {
+	void search_employee_OK() throws Exception {
 		Employee employee = createSampleEmployee();
 		List<Employee> employees = Arrays.asList(employee);
 		when(mockRepository.findAll(any(Example.class))).thenReturn(employees);

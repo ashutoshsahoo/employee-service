@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,14 +35,8 @@ class EmployeeServiceImplTest {
 
     @Test
     void testCreate() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-        when(this.employeeRepository.saveAndFlush((Employee) any())).thenReturn(employee);
+        Employee employee = createEmployee();
+        when(this.employeeRepository.saveAndFlush(any(Employee.class))).thenReturn(employee);
 
         CreateEmployeeRequest createEmployeeRequest = new CreateEmployeeRequest();
         createEmployeeRequest.setDesignation("Designation");
@@ -55,21 +49,15 @@ class EmployeeServiceImplTest {
         assertEquals(123L, actualCreateResult.getId().longValue());
         assertEquals("Designation", actualCreateResult.getDesignation());
         assertEquals("Department", actualCreateResult.getDepartment());
-        verify(this.employeeRepository).saveAndFlush((Employee) any());
+        verify(this.employeeRepository).saveAndFlush(any(Employee.class));
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
     }
 
     @Test
     void testViewById() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-        Optional<Employee> ofResult = Optional.<Employee>of(employee);
-        when(this.employeeRepository.findById((Long) any())).thenReturn(ofResult);
+        Employee employee = createEmployee();
+        Optional<Employee> ofResult = Optional.of(employee);
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(ofResult);
         EmployeeDto actualViewByIdResult = this.employeeServiceImpl.viewById(123L);
         assertEquals("42 Main St", actualViewByIdResult.getAddress());
         assertEquals("4105551212", actualViewByIdResult.getPhone());
@@ -77,36 +65,28 @@ class EmployeeServiceImplTest {
         assertEquals(123L, actualViewByIdResult.getId().longValue());
         assertEquals("Designation", actualViewByIdResult.getDesignation());
         assertEquals("Department", actualViewByIdResult.getDepartment());
-        verify(this.employeeRepository).findById((Long) any());
+        verify(this.employeeRepository).findById(any(Long.class));
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
     }
 
     @Test
     void testViewById2() {
-        when(this.employeeRepository.findById((Long) any())).thenReturn(Optional.<Employee>empty());
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> this.employeeServiceImpl.viewById(123L));
-        verify(this.employeeRepository).findById((Long) any());
+        verify(this.employeeRepository).findById(any(Long.class));
     }
 
     @Test
     void testGetAll() {
-        when(this.employeeRepository.findAll()).thenReturn(new ArrayList<Employee>());
+        when(this.employeeRepository.findAll()).thenReturn(Collections.emptyList());
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
         verify(this.employeeRepository).findAll();
     }
 
     @Test
     void testGetAll2() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-
-        ArrayList<Employee> employeeList = new ArrayList<Employee>();
-        employeeList.add(employee);
+        Employee employee = createEmployee();
+        List<Employee> employeeList = Collections.singletonList(employee);
         when(this.employeeRepository.findAll()).thenReturn(employeeList);
         assertEquals(1, this.employeeServiceImpl.getAll().size());
         verify(this.employeeRepository).findAll();
@@ -114,25 +94,9 @@ class EmployeeServiceImplTest {
 
     @Test
     void testGetAll3() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-
-        Employee employee1 = new Employee();
-        employee1.setDepartment("Department");
-        employee1.setDesignation("Designation");
-        employee1.setId(123L);
-        employee1.setName("Name");
-        employee1.setPhone("4105551212");
-        employee1.setAddress("42 Main St");
-
-        ArrayList<Employee> employeeList = new ArrayList<Employee>();
-        employeeList.add(employee1);
-        employeeList.add(employee);
+        Employee employee = createEmployee();
+        Employee employee1 = createEmployee();
+        List<Employee> employeeList = List.of(employee, employee1);
         when(this.employeeRepository.findAll()).thenReturn(employeeList);
         assertEquals(2, this.employeeServiceImpl.getAll().size());
         verify(this.employeeRepository).findAll();
@@ -140,25 +104,11 @@ class EmployeeServiceImplTest {
 
     @Test
     void testUpdate() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-        Optional<Employee> ofResult = Optional.<Employee>of(employee);
-
-        Employee employee1 = new Employee();
-        employee1.setDepartment("Department");
-        employee1.setDesignation("Designation");
-        employee1.setId(123L);
-        employee1.setName("Name");
-        employee1.setPhone("4105551212");
-        employee1.setAddress("42 Main St");
-        when(this.employeeRepository.save((Employee) any())).thenReturn(employee1);
-        when(this.employeeRepository.findById((Long) any())).thenReturn(ofResult);
-
+        Employee employee = createEmployee();
+        Optional<Employee> ofResult = Optional.of(employee);
+        Employee employee1 = createEmployee();
+        when(this.employeeRepository.save(any(Employee.class))).thenReturn(employee1);
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(ofResult);
         UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
         updateEmployeeRequest.setDesignation("Designation");
         updateEmployeeRequest.setDepartment("Department");
@@ -172,23 +122,17 @@ class EmployeeServiceImplTest {
         assertEquals(123L, actualUpdateResult.getId().longValue());
         assertEquals("Designation", actualUpdateResult.getDesignation());
         assertEquals("Department", actualUpdateResult.getDepartment());
-        verify(this.employeeRepository).findById((Long) any());
-        verify(this.employeeRepository).save((Employee) any());
+        verify(this.employeeRepository).findById(any(Long.class));
+        verify(this.employeeRepository).save(any(Employee.class));
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
     }
 
+
     @Test
     void testUpdate2() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-        when(this.employeeRepository.save((Employee) any())).thenReturn(employee);
-        when(this.employeeRepository.findById((Long) any())).thenReturn(Optional.<Employee>empty());
-
+        Employee employee = createEmployee();
+        when(this.employeeRepository.save(any(Employee.class))).thenReturn(employee);
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         UpdateEmployeeRequest updateEmployeeRequest = new UpdateEmployeeRequest();
         updateEmployeeRequest.setDesignation("Designation");
         updateEmployeeRequest.setDepartment("Department");
@@ -196,40 +140,33 @@ class EmployeeServiceImplTest {
         updateEmployeeRequest.setName("Name");
         updateEmployeeRequest.setAddress("42 Main St");
         assertThrows(EmployeeNotFoundException.class, () -> this.employeeServiceImpl.update(123L, updateEmployeeRequest));
-        verify(this.employeeRepository).findById((Long) any());
+        verify(this.employeeRepository).findById(any(Long.class));
     }
 
     @Test
     void testDelete() {
-        Employee employee = new Employee();
-        employee.setDepartment("Department");
-        employee.setDesignation("Designation");
-        employee.setId(123L);
-        employee.setName("Name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-        Optional<Employee> ofResult = Optional.<Employee>of(employee);
-        doNothing().when(this.employeeRepository).delete((Employee) any());
-        when(this.employeeRepository.findById((Long) any())).thenReturn(ofResult);
+        Employee employee = createEmployee();
+        Optional<Employee> ofResult = Optional.of(employee);
+        doNothing().when(this.employeeRepository).delete(any(Employee.class));
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(ofResult);
         this.employeeServiceImpl.delete(123L);
-        verify(this.employeeRepository).delete((Employee) any());
-        verify(this.employeeRepository).findById((Long) any());
+        verify(this.employeeRepository).delete(any(Employee.class));
+        verify(this.employeeRepository).findById(any(Long.class));
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
     }
 
     @Test
     void testDelete2() {
-        doNothing().when(this.employeeRepository).delete((Employee) any());
-        when(this.employeeRepository.findById((Long) any())).thenReturn(Optional.<Employee>empty());
+        doNothing().when(this.employeeRepository).delete(any(Employee.class));
+        when(this.employeeRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> this.employeeServiceImpl.delete(123L));
-        verify(this.employeeRepository).findById((Long) any());
+        verify(this.employeeRepository).findById(any(Long.class));
     }
 
     @Test
     void testSearch() {
         when(this.employeeRepository.findAll((org.springframework.data.domain.Example<Employee>) any()))
-                .thenReturn(new ArrayList<Employee>());
-
+                .thenReturn(Collections.emptyList());
         EmployeeSearchRequest employeeSearchRequest = new EmployeeSearchRequest();
         employeeSearchRequest.setDesignation("Designation");
         employeeSearchRequest.setDepartment("Department");
@@ -242,19 +179,10 @@ class EmployeeServiceImplTest {
 
     @Test
     void testSearch2() {
-        Employee employee = new Employee();
-        employee.setDepartment("name");
-        employee.setDesignation("name");
-        employee.setId(123L);
-        employee.setName("name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-
-        ArrayList<Employee> employeeList = new ArrayList<Employee>();
-        employeeList.add(employee);
+        Employee employee = createEmployee();
+        List<Employee> employeeList = Collections.singletonList(employee);
         when(this.employeeRepository.findAll((org.springframework.data.domain.Example<Employee>) any()))
                 .thenReturn(employeeList);
-
         EmployeeSearchRequest employeeSearchRequest = new EmployeeSearchRequest();
         employeeSearchRequest.setDesignation("Designation");
         employeeSearchRequest.setDepartment("Department");
@@ -266,25 +194,9 @@ class EmployeeServiceImplTest {
 
     @Test
     void testSearch3() {
-        Employee employee = new Employee();
-        employee.setDepartment("name");
-        employee.setDesignation("name");
-        employee.setId(123L);
-        employee.setName("name");
-        employee.setPhone("4105551212");
-        employee.setAddress("42 Main St");
-
-        Employee employee1 = new Employee();
-        employee1.setDepartment("name");
-        employee1.setDesignation("name");
-        employee1.setId(123L);
-        employee1.setName("name");
-        employee1.setPhone("4105551212");
-        employee1.setAddress("42 Main St");
-
-        ArrayList<Employee> employeeList = new ArrayList<Employee>();
-        employeeList.add(employee1);
-        employeeList.add(employee);
+        Employee employee = createEmployee();
+        Employee employee1 = createEmployee();
+        List<Employee> employeeList = List.of(employee, employee1);
         when(this.employeeRepository.findAll((org.springframework.data.domain.Example<Employee>) any()))
                 .thenReturn(employeeList);
 
@@ -295,6 +207,17 @@ class EmployeeServiceImplTest {
         assertEquals(2, this.employeeServiceImpl.search(employeeSearchRequest).size());
         verify(this.employeeRepository).findAll((org.springframework.data.domain.Example<Employee>) any());
         assertTrue(this.employeeServiceImpl.getAll().isEmpty());
+    }
+
+    private Employee createEmployee() {
+        Employee employee = new Employee();
+        employee.setDepartment("Department");
+        employee.setDesignation("Designation");
+        employee.setId(123L);
+        employee.setName("Name");
+        employee.setPhone("4105551212");
+        employee.setAddress("42 Main St");
+        return employee;
     }
 }
 
