@@ -1,9 +1,10 @@
 package com.ashu.practice.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.validation.constraints.Pattern;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EmployeeSearchRequest implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = -434836238241596395L;
 	
 	private static final String NAME_REGEX = "^[a-zA-Z0-9\\s]+";

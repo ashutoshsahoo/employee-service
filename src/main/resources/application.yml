@@ -1,9 +1,13 @@
+spring:
+  application:
+    name: employee-service
+  jpa:
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
+    
 logging:
   level:
     com.ashu.practice: DEBUG
-server:  servlet:    context-path: /api/v1
-
-
-spring:  jpa:    show-sql: true  h2:    console:      enabled: true
-
-    

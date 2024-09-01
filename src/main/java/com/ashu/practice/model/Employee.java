@@ -1,15 +1,10 @@
 package com.ashu.practice.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "EMPLOYEES")
 public class Employee implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private static final String EMP_SEQ = "EMPLOYEE_ID_SEQUENCE";

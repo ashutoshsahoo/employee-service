@@ -60,7 +60,7 @@ class EmployeeControllerTests {
 	void find_employeeId_OK() throws Exception {
 		// @formatter:off
 		mockMvc.perform(
-				get("/employees/{id}", 1001)
+				get("/api/v1/employees/{id}", 1001)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				// .andDo(print())
@@ -79,7 +79,7 @@ class EmployeeControllerTests {
 	@Test
 	void find_employeeIdNotFound_404() throws Exception {
 		// @formatter:off
-		mockMvc.perform(get("/employees/{id}", 1005)
+		mockMvc.perform(get("/api/v1/employees/{id}", 1005)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -95,7 +95,7 @@ class EmployeeControllerTests {
 
 		when(mockRepository.findAll()).thenReturn(employees);
 		// @formatter:off
-		mockMvc.perform(get("/employees")
+		mockMvc.perform(get("/api/v1/employees")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -126,7 +126,7 @@ class EmployeeControllerTests {
 		createEmployee.setDepartment("employee department");
 		when(mockRepository.saveAndFlush(any(Employee.class))).thenReturn(employee);
 		// @formatter:off
-		mockMvc.perform(post("/employees")
+		mockMvc.perform(post("/api/v1/employees")
 				.content(objectMapper.writeValueAsString(createEmployee))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -144,7 +144,7 @@ class EmployeeControllerTests {
 	void save_emptyName_nullDesignation_400() throws Exception {
 		Employee employee = createEmployee(null, "", null, "department", null, null);
 		// @formatter:off
-		mockMvc.perform(post("/employees")
+		mockMvc.perform(post("/api/v1/employees")
 				.content(objectMapper.writeValueAsString(employee))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -154,7 +154,7 @@ class EmployeeControllerTests {
 				.andExpect(jsonPath("$.details").isArray())
 				.andExpect(jsonPath("$.details", hasSize(4)))
 				.andExpect(jsonPath("$.details", hasItem("name should not be empty or null")))
-				.andExpect(jsonPath("$.details", hasItem("name should have minimun 2 characters and maximum 50 characters length")))
+				.andExpect(jsonPath("$.details", hasItem("name should have minimum 2 characters and maximum 50 characters length")))
 				.andExpect(jsonPath("$.details", hasItem("Invalid name - no special characters allowed")))
 				.andExpect(jsonPath("$.details", hasItem("designation should not be empty or null")));
 		// @formatter:on
@@ -163,11 +163,11 @@ class EmployeeControllerTests {
 
 	@Test
 	void update_employee_OK() throws Exception {
-		Employee updateEmployee = updatePyload();
+		Employee updateEmployee = updatePayload();
 		Employee employee = createSampleEmployee();
 		when(mockRepository.save(any(Employee.class))).thenReturn(employee);
 		// @formatter:off
-		mockMvc.perform(put("/employees/{id}", 1001)
+		mockMvc.perform(put("/api/v1/employees/{id}", 1001)
 				.content(objectMapper.writeValueAsString(updateEmployee))
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -186,7 +186,7 @@ class EmployeeControllerTests {
 	void delete_employee_OK() throws Exception {
 		doNothing().when(mockRepository).delete(any(Employee.class));
 		// @formatter:off
-		mockMvc.perform(delete("/employees/{id}", 1001)
+		mockMvc.perform(delete("/api/v1/employees/{id}", 1001)
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
 				// .andDo(print())
@@ -199,10 +199,10 @@ class EmployeeControllerTests {
 	@Test
 	void search_employee_OK() throws Exception {
 		Employee employee = createSampleEmployee();
-		List<Employee> employees = Arrays.asList(employee);
+		List<Employee> employees = List.of(employee);
 		when(mockRepository.findAll(any(Example.class))).thenReturn(employees);
 		// @formatter:off
-		mockMvc.perform(get("/employees/search")
+		mockMvc.perform(get("/api/v1/employees/search")
 				.param("name", "employee")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON))
@@ -225,7 +225,7 @@ class EmployeeControllerTests {
 				"employee address");
 	}
 
-	private Employee updatePyload() {
+	private Employee updatePayload() {
 		return createEmployee(null, "employee name", "employee designation", "employee department", "9000011111",
 				"employee address");
 	}

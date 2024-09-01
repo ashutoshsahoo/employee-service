@@ -1,5 +1,6 @@
 package com.ashu.practice.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ErrorResponseDto implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 4802305410875463159L;
 
 	private String message;
